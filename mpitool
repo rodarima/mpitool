@@ -61,6 +61,11 @@ Examples
 EOF
 }
 
+if [ "$#" -lt 2 ]; then
+	usage
+	exit 1
+fi
+
 cc=echo
 flag=$1
 mpicc=$2
