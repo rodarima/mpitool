@@ -105,7 +105,7 @@ fi
 
 out=$(printf "%s\n" $result | tr ' ' '\n' | \
 	grep -v $ctest | \
-	grep -v '^-c' | \
+	grep -v '^-c$' | \
 	grep -- $regex)
 
 # Join back into one line
