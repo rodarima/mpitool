@@ -6,6 +6,21 @@ Usage
 
         mpitool (--link|--compile) mpiwrapper [regex]
 
+Description
+
+	The mpitool program replaces the compiler used by the MPI wrapper
+        with the 'echo' program, and then captures the arguments. The
+        environment variables like I_MPI_CC or OMPI_CC are used to
+	run 'echo' as the compiler. Only Openmpi, Intel MPI, and MPICH
+        are supported by now.
+
+        To use with other wrappers, set the compiler to echo, maybe
+        using a CUSTOM_CC=echo variable, before calling mpitool.
+
+        Note: for Intel MPI you can only use mpiicc or mpigcc for the
+        MPI wrapper, as mpicc doesn't allow other compilers than icc and
+        gcc. The same occurs for mpiicpc and mpigxx.
+
 Options
 
         --link	     Calls the mpiwrapper as if it was linking a program,
@@ -24,14 +39,14 @@ Options
 Examples
 
         Get the dynamic libraries used at link time for C:
-        $ mpitool --link mpicc ^-l
+        $ mpitool --link mpicc "^-l"
 
         Get all flags given by the wrapper for compilation stage for C++:
         $ mpitool --compile mpicxx
 
         It can also be used in a Makefile:
 
-          LDFLAGS+=$(shell mpitool --link mpicc ^-L)
-          LDLIBS+=$(shell mpitool --link mpicc ^-l)
-          CFLAGS+=$(shell mpitool --compile mpicc ^-I)
+          LDFLAGS+=$(shell mpitool --link mpicc "^-L")
+          LDLIBS+=$(shell mpitool --link mpicc "^-l")
+          CFLAGS+=$(shell mpitool --compile mpicc "^-I")
 
