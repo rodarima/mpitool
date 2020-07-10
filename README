@@ -1,11 +1,3 @@
-#!/bin/bash
-
-# mpiflags tries to discover what flags are used by your mpi compiler wrapper by
-# using echo as the underlining compiler.
-
-function usage(){
-
-cat << EOF
 mpitool
 
 	Get MPI build flags from mpicc and mpicxx wrappers.
@@ -39,59 +31,7 @@ Examples
 
         It can also be used in a Makefile:
 
-          LDFLAGS+=\$(shell mpitool --link mpicc ^-L)
-          LDLIBS+=\$(shell mpitool --link mpicc ^-l)
-          CFLAGS+=\$(shell mpitool --compile mpicc ^-I)
+          LDFLAGS+=$(shell mpitool --link mpicc ^-L)
+          LDLIBS+=$(shell mpitool --link mpicc ^-l)
+          CFLAGS+=$(shell mpitool --compile mpicc ^-I)
 
-EOF
-}
-
-cc=echo
-flag=$1
-mpicc=$2
-regex=${3:-.}
-
-export I_MPI_CC=$cc
-export OMPI_CC=$cc
-export MPICH_CC=$cc
-export I_MPI_CXX=$cc
-export OMPI_CXX=$cc
-export MPICH_CXX=$cc
-
-prefixes=("I_MPI" "OMPI" "MPICH")
-langs=("CC" "CXX")
-
-ctest=this-is-a-random-file-from-1984.c
-cflags=
-split=0
-
-case $flag in
-	--compile)
-		cflags="-c"
-	;;
-	--link)
-		# Nothing needed
-	;;
-	*)
-		usage
-		exit 1
-	;;
-esac
-
-result=$($mpicc $cflags $ctest)
-
-if [ $? != 0 ]; then
-	exit 1
-fi
-
-out=$(printf "%s\n" $result | tr ' ' '\n' | \
-	grep -v $ctest | \
-	grep -v '^-c' | \
-	grep -- $regex)
-
-# Join back into one line
-out=$(printf "%s\n" $out | tr '\n' ' ')
-
-printf "%s\n" "$out"
-
-exit 0
