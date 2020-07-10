@@ -66,15 +66,14 @@ flag=$1
 mpicc=$2
 regex=${3:-.}
 
-export I_MPI_CC=$cc
-export OMPI_CC=$cc
-export MPICH_CC=$cc
-export I_MPI_CXX=$cc
-export OMPI_CXX=$cc
-export MPICH_CXX=$cc
-
 prefixes=("I_MPI" "OMPI" "MPICH")
 langs=("CC" "CXX")
+
+for p in ${prefixes[@]}; do
+	for l in ${langs[@]}; do
+		export ${p}_${l}=$cc
+	done
+done
 
 ctest=this-is-a-random-file-from-1984.c
 cflags=
